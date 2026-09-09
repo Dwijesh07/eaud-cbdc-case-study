@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="eAUD — Team P29's permissioned CBDC research prototype, documented as a finance-to-engineering case study." />
+  <title>eAUD — CBDC Engineering Case Study</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header" id="top">
+    <a class="brand" href="#top" aria-label="eAUD case study home">
+      <span class="brand-mark">e</span>
+      <span>eAUD / Research Case Study</span>
+    </a>
+    <nav class="nav" aria-label="Primary navigation">
+      <a href="#overview">Overview</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#product">Product</a>
+      <a href="#engineering">Engineering</a>
+      <a href="#contribution">Team & role</a>
+    </nav>
+    <a class="nav-cta" href="assets/eAUD-CBDC-Project-Case-Study.pdf" target="_blank" rel="noopener">Read report ↓</a>
+  </header>
+
+  <main>
+    <section class="hero section-shell">
+      <div class="hero-copy">
+        <p class="eyebrow">TEAM P29 · RESEARCH + ENGINEERING CASE STUDY · 2025–2026</p>
+        <h1>Designing a permissioned <span>CBDC research prototype</span> from finance concepts to working software.</h1>
+        <p class="hero-lede">
+          A two-phase capstone exploring how tokenised central-bank money, institutional roles, enterprise identity, KYC and transaction monitoring could coexist in one controlled architecture — explained for both finance and technical readers.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#overview">Start with the idea</a>
+          <a class="button secondary" href="assets/eAUD-CBDC-Project-Case-Study.pdf" target="_blank">Read the full report ↓</a>
+        </div>
+      </div>
+
+      <aside class="hero-meta" aria-label="Project summary">
+        <div class="meta-row"><span>Project</span><strong>Team P29 — eAUD Prototype</strong></div>
+        <div class="meta-row"><span>Case-study author</span><strong>Isar Ujoodah</strong></div>
+        <div class="meta-row"><span>Project role</span><strong>Lead Developer & Scrum Master</strong></div>
+        <div class="meta-row"><span>Institution</span><strong>Swinburne University</strong></div>
+        <div class="meta-row"><span>Stack</span><strong>Fabric · React · Node · Keycloak · Docker</strong></div>
+      </aside>
+    </section>
+
+    <section class="signal-band" aria-label="Project metrics">
+      <div><strong>6</strong><span>team members</span></div>
+      <div><strong>4</strong><span>network organisations</span></div>
+      <div><strong>5</strong><span>application roles</span></div>
+      <div><strong>7</strong><span>monitoring signals</span></div>
+    </section>
+
+    <section class="primer section-shell" id="overview">
+      <div class="section-kicker">00 / START HERE</div>
+      <div class="primer-intro">
+        <div>
+          <h2>What exactly is this project?</h2>
+          <p>This is an academic research prototype — not a proposed replacement for Australia’s existing payment system and not an RBA product. It uses a permissioned ledger to make institutional roles, digital-money flows and compliance questions tangible.</p>
+        </div>
+        <aside class="context-note"><strong>Important context</strong><span>Australia already operates high-value real-time gross settlement through RITS. The useful question here is how tokenised wholesale markets might coordinate money, identity, permissions and monitoring.</span></aside>
+      </div>
+      <div class="primer-strip">
+        <article><span>01</span><h3>CBDC</h3><p>Digital central-bank money. In a wholesale model, access is limited to eligible financial-market participants.</p></article>
+        <article><span>02</span><h3>Wholesale settlement</h3><p>The final movement of value between institutions — different from a consumer card or banking-app payment.</p></article>
+        <article><span>03</span><h3>Permissioned ledger</h3><p>A network where organisations are known and access can be controlled, unlike a public permissionless cryptocurrency network.</p></article>
+      </div>
+    </section>
+
+    <section class="section-shell editorial-grid" id="challenge">
+      <div class="section-kicker">01 / CHALLENGE</div>
+      <div class="editorial-copy">
+        <h2>The question was not “can we put money on a blockchain?” It was where identity, compliance and institutional authority belong.</h2>
+        <p>
+          The prototype had to model multiple institutional actors, restrict what each could do, validate identity and KYC state, screen transaction behaviour and then hand an approved application request to a permissioned ledger. That made governance decisions visible as software behaviour instead of leaving them only in a report.
+        </p>
+        <div class="problem-grid">
+          <article><span>01</span><h3>Settlement</h3><p>Transactions needed a deterministic path from proposal to validation and commit.</p></article>
+          <article><span>02</span><h3>Identity</h3><p>Central bank, banks, regulator and customer roles required materially different permissions.</p></article>
+          <article><span>03</span><h3>Compliance</h3><p>Suspicious behaviour had to be evaluated before irreversible ledger submission.</p></article>
+          <article><span>04</span><h3>Oversight</h3><p>The regulator needed visibility without becoming a transaction-authorising participant.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="architecture section-shell" id="architecture">
+      <div class="section-kicker">02 / SYSTEM DESIGN</div>
+      <div class="section-heading-row">
+        <div>
+          <h2>A layered architecture with institutional boundaries.</h2>
+          <p>Each layer has a specific responsibility: identity, application logic, compliance screening, settlement and state.</p>
+        </div>
+        <span class="micro-label">eaudchannel / permissioned network</span>
+      </div>
+
+      <div class="architecture-stage" role="img" aria-label="System architecture from users through Keycloak, React, Node API, Hyperledger Fabric and chaincode">
+        <div class="arch-layer users-layer">
+          <span class="arch-label">USERS</span>
+          <div class="arch-pills"><span>RBA Admin</span><span>Bank A</span><span>Bank B</span><span>AUSTRAC</span><span>Customer</span></div>
+        </div>
+        <div class="flow-line"><span>authenticated session</span></div>
+        <div class="arch-layer">
+          <span class="arch-label">IDENTITY</span>
+          <div><strong>Keycloak</strong><small>OAuth 2.0 / OpenID Connect · role groups</small></div>
+        </div>
+        <div class="flow-line"><span>access token</span></div>
+        <div class="arch-split">
+          <div class="arch-layer">
+            <span class="arch-label">FRONTEND</span>
+            <div><strong>React</strong><small>role-based dashboards · KYC · transfers · monitoring</small></div>
+          </div>
+          <div class="arch-layer">
+            <span class="arch-label">API + COMPLIANCE</span>
+            <div><strong>Node.js / Express</strong><small>RBAC · AML screening · KYC · Fabric SDK</small></div>
+          </div>
+        </div>
+        <div class="flow-line"><span>transaction proposal</span></div>
+        <div class="fabric-network">
+          <span class="arch-label">HYPERLEDGER FABRIC</span>
+          <div class="org-grid">
+            <article><small>ORDERING AUTHORITY</small><strong>RBA</strong><span>orders network transactions</span></article>
+            <article><small>ENDORSING PEER</small><strong>Bank A</strong><span>institutional participant</span></article>
+            <article><small>ENDORSING PEER</small><strong>Bank B</strong><span>institutional participant</span></article>
+            <article><small>OBSERVER</small><strong>AUSTRAC</strong><span>monitoring / regulatory visibility</span></article>
+          </div>
+        </div>
+        <div class="flow-line"><span>validated state update</span></div>
+        <div class="arch-split bottom-split">
+          <div class="arch-layer"><span class="arch-label">SMART CONTRACT</span><div><strong>eAUD Chaincode</strong><small>CreateWallet · AddFunds · TransferEAUD · QueryWallet</small></div></div>
+          <div class="arch-layer"><span class="arch-label">STATE</span><div><strong>CouchDB</strong><small>ledger world-state database</small></div></div>
+        </div>
+      </div>
+
+      <div class="decision-grid">
+        <article><span>Decision 01</span><h3>Permissioned participation</h3><p>The prototype models known organisations rather than anonymous public-chain participants.</p></article>
+        <article><span>Decision 02</span><h3>Regulator as observer</h3><p>AUSTRAC receives monitoring visibility without being represented as an actor that mints or transfers funds.</p></article>
+        <article><span>Decision 03</span><h3>Screen before submit</h3><p>AML logic is evaluated at the API layer before the transfer is proposed to the Fabric network.</p></article>
+      </div>
+    </section>
+
+    <section class="product section-shell" id="product">
+      <div class="section-kicker">03 / PRODUCT</div>
+      <div class="section-heading-row">
+        <div>
+          <h2>The interface reflects the institution behind the login.</h2>
+          <p>Role-based views expose only the workflows relevant to each participant.</p>
+        </div>
+      </div>
+
+      <article class="product-feature">
+        <div class="product-copy">
+          <span class="product-number">01</span>
+          <p class="eyebrow">AUSTRAC / TRANSACTION MONITORING</p>
+          <h3>Risk signals are visible at the point of oversight.</h3>
+          <p>The regulator view surfaces transaction amount, status, risk score and suspicious flags in one operational table.</p>
+          <ul class="plain-list">
+            <li>Risk score per transaction</li>
+            <li>Flagged transaction state</li>
+            <li>Cross-wallet transaction visibility</li>
+            <li>Real-time monitoring workflow</li>
+          </ul>
+        </div>
+        <button class="image-frame image-button" data-image="assets/au-dashboard.png" aria-label="Open AUSTRAC transaction monitoring screenshot">
+          <img src="assets/au-dashboard.png" alt="AUSTRAC transaction monitoring dashboard showing risk scores and flagged transactions" loading="lazy" />
+        </button>
+      </article>
+
+      <article class="product-feature reverse">
+        <div class="product-copy">
+          <span class="product-number">02</span>
+          <p class="eyebrow">AUSTRAC / ANALYTICS</p>
+          <h3>Monitoring extends from individual transactions to portfolio-level patterns.</h3>
+          <p>The analytics view combines date, bank and risk filters with transaction-volume and risk-distribution visualisations.</p>
+          <div class="mini-metrics">
+            <span><strong>Volume</strong><small>over time</small></span>
+            <span><strong>Bank</strong><small>activity</small></span>
+            <span><strong>Risk</strong><small>distribution</small></span>
+          </div>
+        </div>
+        <button class="image-frame image-button" data-image="assets/au-analytics.png" aria-label="Open AUSTRAC analytics screenshot">
+          <img src="assets/au-analytics.png" alt="AUSTRAC transaction intelligence dashboard with line, bar and donut charts" loading="lazy" />
+        </button>
+      </article>
+
+      <article class="product-feature">
+        <div class="product-copy">
+          <span class="product-number">03</span>
+          <p class="eyebrow">RBA / TRANSACTION VIEW</p>
+          <h3>System-level access without collapsing role boundaries.</h3>
+          <p>The RBA administrative view provides broader transaction visibility while preserving institution labels, search and transaction status.</p>
+        </div>
+        <button class="image-frame image-button" data-image="assets/rba-transactions.png" aria-label="Open RBA transaction screenshot">
+          <img src="assets/rba-transactions.png" alt="RBA admin recent transactions interface" loading="lazy" />
+        </button>
+      </article>
+    </section>
+
+    <section class="engineering section-shell" id="engineering">
+      <div class="section-kicker">04 / ENGINEERING DEEP DIVE</div>
+      <div class="section-heading-row">
+        <div>
+          <h2>Seven signals feed one pre-commit risk assessment.</h2>
+          <p>The AML engine was implemented as a prototype heuristic layer, designed to surface suspicious patterns before ledger submission.</p>
+        </div>
+      </div>
+
+      <div class="aml-layout">
+        <div class="transaction-flow">
+          <div class="flow-node"><small>01</small><strong>Transfer request</strong><span>source · destination · amount</span></div>
+          <div class="connector"></div>
+          <div class="flow-node"><small>02</small><strong>Identity & role check</strong><span>Keycloak token / API RBAC</span></div>
+          <div class="connector"></div>
+          <div class="flow-node accent-node"><small>03</small><strong>AML screening</strong><span>7 behavioural signals → risk score</span></div>
+          <div class="connector"></div>
+          <div class="flow-node"><small>04</small><strong>Fabric proposal</strong><span>endorsement · ordering · validation</span></div>
+          <div class="connector"></div>
+          <div class="flow-node"><small>05</small><strong>Commit + monitoring</strong><span>state update / regulator visibility</span></div>
+        </div>
+
+        <div class="rules-table" role="table" aria-label="AML prototype rules">
+          <div class="rule-row header" role="row"><span>Signal</span><span>Prototype trigger</span></div>
+          <div class="rule-row"><strong>Large transaction</strong><span>&gt; 1,000 eAUD</span></div>
+          <div class="rule-row"><strong>Very large transaction</strong><span>&gt; 5,000 eAUD</span></div>
+          <div class="rule-row"><strong>Round number pattern</strong><span>amount ends in 000</span></div>
+          <div class="rule-row"><strong>Rapid transactions</strong><span>3+ per minute</span></div>
+          <div class="rule-row"><strong>Time anomaly</strong><span>outside configured hours</span></div>
+          <div class="rule-row"><strong>Historical deviation</strong><span>2× recent average</span></div>
+          <div class="rule-row"><strong>Flagged account</strong><span>watchlist match</span></div>
+          <p class="rules-note">These thresholds were prototype calibration values, not production AML policy.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="failure section-shell">
+      <div class="section-kicker">05 / FAILURE → DIAGNOSIS → FIX</div>
+      <div class="failure-title">
+        <p>The strongest lesson in the project:</p>
+        <h2>The AML function worked.<br><span>The system did not.</span></h2>
+      </div>
+
+      <div class="failure-compare">
+        <article>
+          <span class="status-label expected">EXPECTED</span>
+          <div class="path"><b>Transfer</b><i>→</i><b>AML</b><i>→</i><b>Fabric</b></div>
+          <p>Every transfer should have passed through suspicious-activity detection before blockchain submission.</p>
+        </article>
+        <article>
+          <span class="status-label actual">ACTUAL</span>
+          <div class="path broken"><b>Transfer</b><i>────────→</i><b>Fabric</b><em>AML existed, but was not invoked</em></div>
+          <p>The detection function had been implemented correctly, but the transfer endpoint never called it.</p>
+        </article>
+      </div>
+
+      <div class="lesson-strip">
+        <div><span>Discovery</span><strong>End-to-end tracing of the transfer journey</strong></div>
+        <div><span>Fix</span><strong>Connect detectSuspicious() to /api/transfer</strong></div>
+        <div><span>Lesson</span><strong>Correct components do not guarantee a correct system.</strong></div>
+      </div>
+    </section>
+
+    <section class="identity section-shell">
+      <div class="section-kicker">06 / IDENTITY & ACCESS</div>
+      <div class="identity-layout">
+        <div>
+          <h2>Authentication moved from prototype credentials to enterprise identity.</h2>
+          <p>The application migrated from a JWT prototype to Keycloak with OAuth 2.0 / OpenID Connect and group-based role mapping.</p>
+          <blockquote>Identity was enforced twice: the interface controlled what users could see, while the API controlled what they could actually do.</blockquote>
+        </div>
+        <div class="role-stack">
+          <div><span>RBA ADMIN</span><p>system-wide wallet and issuance operations</p></div>
+          <div><span>BANK A / BANK B</span><p>institution-scoped KYC and wallet operations</p></div>
+          <div><span>AUSTRAC</span><p>monitoring, flags and analytics</p></div>
+          <div><span>CUSTOMER</span><p>own-wallet balance, history and transfers</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="deployment section-shell">
+      <div class="section-kicker">07 / DEPLOYMENT</div>
+      <div class="section-heading-row">
+        <div>
+          <h2>Reproducibility became part of the product.</h2>
+          <p>Containerisation reduced setup friction across Fabric-adjacent services and gave the team a repeatable way to run identity, API and UI components.</p>
+        </div>
+      </div>
+      <div class="deployment-gallery">
+        <button class="image-frame image-button" data-image="assets/docker-desktop.png" aria-label="Open Docker Desktop screenshot">
+          <img src="assets/docker-desktop.png" alt="Docker Desktop showing project containers running" loading="lazy" />
+          <span>Docker Desktop / running services</span>
+        </button>
+        <button class="image-frame image-button" data-image="assets/fabric-terminal.png" aria-label="Open terminal screenshot">
+          <img src="assets/fabric-terminal.png" alt="Terminal output from the project environment" loading="lazy" />
+          <span>Terminal / orchestration evidence</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="timeline section-shell">
+      <div class="section-kicker">08 / EVOLUTION</div>
+      <div class="section-heading-row">
+        <div>
+          <h2>From research framing to a working multi-service prototype.</h2>
+          <p>The project evolved across two academic phases rather than appearing as a finished implementation.</p>
+        </div>
+      </div>
+      <ol class="timeline-list">
+        <li><time>AUG–SEP 2025</time><div><strong>Research & stakeholder framing</strong><p>CBDC literature, stakeholder mapping, project scope and architecture options.</p></div></li>
+        <li><time>OCT–NOV 2025</time><div><strong>Fabric experimentation</strong><p>Peer network setup, eAUD channel, first chaincode deployment and initial transaction UI.</p></div></li>
+        <li><time>MAR 2026</time><div><strong>Regulatory alignment</strong><p>Mapped governance, privacy, security and AML considerations to the prototype architecture.</p></div></li>
+        <li><time>APR 2026</time><div><strong>Full application build</strong><p>Four-organisation network, custom chaincode, React dashboards, KYC and AML logic.</p></div></li>
+        <li><time>MAY 2026</time><div><strong>Identity & deployment</strong><p>Keycloak migration and Dockerisation of application services.</p></div></li>
+        <li><time>JUN 2026</time><div><strong>Integration & handover</strong><p>AML integration fix, final demo, documentation and project sign-off.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="contribution section-shell" id="contribution">
+      <div class="section-kicker">09 / TEAM & AUTHOR ROLE</div>
+      <div class="section-heading-row">
+        <div>
+          <h2>A Team P29 project, with clear ownership where it matters.</h2>
+          <p>The final system was built by six team members. The case study is authored by Isar Ujoodah; the breakdown below records the core areas he directly owned or led without presenting the wider product as a solo project.</p>
+        </div>
+      </div>
+      <div class="team-note"><strong>Team P29</strong><span>Isar Ujoodah · Luvish Rajnath · Lasith Perera · Farzana Moietry · Ashikur Rahman · Al Hamid Arath</span><p>Sprint 4 team features also included PDF export (Luvish), pagination/search (Lasith), email alerts (Farzana), transaction analytics (Ashikur) and CSV export (Al Hamid).</p></div>
+      <div class="contribution-grid">
+        <article><span>01</span><h3>Blockchain</h3><p>Configured and extended the Hyperledger Fabric network and implemented core eAUD chaincode functions.</p></article>
+        <article><span>02</span><h3>Backend</h3><p>Built the Node/Express API across wallet, transfer, KYC, monitoring and authentication flows.</p></article>
+        <article><span>03</span><h3>Compliance</h3><p>Implemented the AML risk engine, diagnosed its integration failure and connected it to the transfer path.</p></article>
+        <article><span>04</span><h3>Frontend</h3><p>Built role-specific React dashboards and integrated authentication state across the application.</p></article>
+        <article><span>05</span><h3>Identity & Infra</h3><p>Migrated the system to Keycloak and containerised the application services with Docker.</p></article>
+        <article><span>06</span><h3>Leadership</h3><p>Served as Scrum Master, facilitated client demos and coordinated the final technical handover.</p></article>
+      </div>
+    </section>
+
+    <section class="reflection section-shell">
+      <div class="section-kicker">10 / OUTCOME & REFLECTION</div>
+      <div class="reflection-grid">
+        <article><span>WHAT WORKED</span><h3>Frequent demos exposed real requirements.</h3><p>Feedback changed the system: KYC controls, identity, deployment and monitoring became stronger because the team demonstrated real flows rather than only presenting architecture.</p></article>
+        <article><span>WHAT FAILED</span><h3>Assumption-based integration testing.</h3><p>The AML defect survived because the team validated the function without validating the complete transfer journey early enough.</p></article>
+        <article><span>WHAT I’D CHANGE</span><h3>Design for production constraints earlier.</h3><p>Start with enterprise identity, persistent encrypted storage, integration tests and institution-scale monitoring calibration from the beginning.</p></article>
+      </div>
+      <div class="limitations">
+        <h3>Prototype limitations</h3>
+        <p>Local/development deployment · heuristic AML thresholds · prototype KYC storage · no production banking integration · no formal production security accreditation.</p>
+      </div>
+    </section>
+
+    <section class="final-cta section-shell">
+      <p class="eyebrow">SOURCE / DOCUMENTATION</p>
+      <h2>A working prototype, documented as an engineering story.</h2>
+      <div class="hero-actions">
+        <a class="button primary" href="assets/eAUD-CBDC-Project-Case-Study.pdf" target="_blank" rel="noopener">Read the 33-page report ↓</a>
+        <a class="button secondary" href="https://github.com/Dwijesh07/P29-Designing-Australia-s-Central-Bank-Digital-Currency" target="_blank" rel="noopener">View repository ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>eAUD CBDC Prototype</span>
+    <span>Team P29 · Case study authored by Isar Ujoodah</span>
+    <span>Swinburne University of Technology</span>
+  </footer>
+
+  <dialog class="lightbox" id="lightbox">
+    <button class="lightbox-close" aria-label="Close image">×</button>
+    <img alt="Expanded project screenshot" />
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>
